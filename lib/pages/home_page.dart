@@ -39,9 +39,58 @@ class _HomePageState extends State<HomePage> {
   void _openInitialStage() {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => ExercisePage(
+        builder: (_) => _LevelPhasesPage(
           playerName: _playerName,
-          stageIndex: 0,
+          levelTitle: 'Inicial',
+          durationLabel: '4 tempos',
+          accentColor: const Color(0xFF005F73),
+          phaseDescriptions: const [
+            'Notas de Do a Sol (4 tempos)',
+            'Notas de Do a Do (4 tempos)',
+            'Do a Sol da segunda oitava (4 tempos)',
+            'Do da primeira oitava ate Sol da segunda oitava (4 tempos)',
+          ],
+          stageStartIndex: 0,
+        ),
+      ),
+    );
+  }
+
+  void _openIntermediateStages() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => _LevelPhasesPage(
+          playerName: _playerName,
+          levelTitle: 'Intermediario',
+          durationLabel: '2 tempos',
+          accentColor: const Color(0xFF0A9396),
+          phaseDescriptions: const [
+            'Notas de Do a Sol (2 tempos)',
+            'Notas de Do a Do (2 tempos)',
+            'Do a Sol da segunda oitava (2 tempos)',
+            'Do da primeira oitava ate Sol da segunda oitava (2 tempos)',
+          ],
+          stageStartIndex: 4,
+        ),
+      ),
+    );
+  }
+
+  void _openAdvancedStages() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => _LevelPhasesPage(
+          playerName: _playerName,
+          levelTitle: 'Avancado',
+          durationLabel: '1 tempo',
+          accentColor: const Color(0xFF9B2226),
+          phaseDescriptions: const [
+            'Notas de Do a Sol (1 tempo)',
+            'Notas de Do a Do (1 tempo)',
+            'Do a Sol da segunda oitava (1 tempo)',
+            'Do da primeira oitava ate Sol da segunda oitava (1 tempo)',
+          ],
+          stageStartIndex: 8,
         ),
       ),
     );
@@ -134,7 +183,7 @@ class _HomePageState extends State<HomePage> {
                             _InfoCard(
                               title: 'Aluno: $_playerName',
                               subtitle:
-                                  'Escolha Inicial para comecar. Os demais niveis liberam conforme seu desempenho.',
+                                  'Escolha qualquer nivel para testar as fases.',
                             ),
                             const SizedBox(height: 12),
                             _LevelCard(
@@ -146,32 +195,16 @@ class _HomePageState extends State<HomePage> {
                             const SizedBox(height: 12),
                             _LevelCard(
                               title: 'Intermediario',
-                              subtitle: '2 tempos (bloqueado)',
+                              subtitle: '2 tempos',
                               accentColor: const Color(0xFF0A9396),
-                              onTap: () {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text(
-                                      'Comece pelo Inicial e alcance 85% para avancar automaticamente.',
-                                    ),
-                                  ),
-                                );
-                              },
+                              onTap: _openIntermediateStages,
                             ),
                             const SizedBox(height: 12),
                             _LevelCard(
                               title: 'Avancado',
-                              subtitle: '1 tempo (bloqueado)',
+                              subtitle: '1 tempo',
                               accentColor: const Color(0xFF9B2226),
-                              onTap: () {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text(
-                                      'Conclua as fases anteriores com 85% para chegar ao Avancado.',
-                                    ),
-                                  ),
-                                );
-                              },
+                              onTap: _openAdvancedStages,
                             ),
                           ],
                         ],
@@ -272,6 +305,122 @@ class _LevelCard extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _LevelPhasesPage extends StatelessWidget {
+  final String playerName;
+  final String levelTitle;
+  final String durationLabel;
+  final Color accentColor;
+  final List<String> phaseDescriptions;
+  final int stageStartIndex;
+
+  const _LevelPhasesPage({
+    required this.playerName,
+    required this.levelTitle,
+    required this.durationLabel,
+    required this.accentColor,
+    required this.phaseDescriptions,
+    required this.stageStartIndex,
+  });
+
+  void _openPhase(BuildContext context, int stageIndex) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => ExercisePage(
+          playerName: playerName,
+          stageIndex: stageIndex,
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Stack(
+        children: [
+          Positioned.fill(
+            child: SvgPicture.asset(
+              'assets/images/home_background.svg',
+              fit: BoxFit.cover,
+            ),
+          ),
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Row(
+                    children: [
+                      IconButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        icon: const Icon(Icons.arrow_back_ios_new_rounded),
+                      ),
+                      const Expanded(
+                        child: SizedBox(),
+                      ),
+                      Expanded(
+                        flex: 5,
+                        child: Text(
+                          '$levelTitle - Escolha a fase',
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.w800,
+                            color: Color(0xFF0D1B2A),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 40),
+                    ],
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    'Aluno: $playerName | $durationLabel',
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      color: Color(0xFF1B263B),
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 18),
+                  _LevelCard(
+                    title: 'Fase 1',
+                    subtitle: phaseDescriptions[0],
+                    accentColor: accentColor,
+                    onTap: () => _openPhase(context, stageStartIndex),
+                  ),
+                  const SizedBox(height: 12),
+                  _LevelCard(
+                    title: 'Fase 2',
+                    subtitle: phaseDescriptions[1],
+                    accentColor: accentColor,
+                    onTap: () => _openPhase(context, stageStartIndex + 1),
+                  ),
+                  const SizedBox(height: 12),
+                  _LevelCard(
+                    title: 'Fase 3',
+                    subtitle: phaseDescriptions[2],
+                    accentColor: accentColor,
+                    onTap: () => _openPhase(context, stageStartIndex + 2),
+                  ),
+                  const SizedBox(height: 12),
+                  _LevelCard(
+                    title: 'Fase 4',
+                    subtitle: phaseDescriptions[3],
+                    accentColor: accentColor,
+                    onTap: () => _openPhase(context, stageStartIndex + 3),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

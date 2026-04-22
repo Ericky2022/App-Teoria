@@ -103,8 +103,6 @@ class _StaffPainter extends CustomPainter {
   }
 
   void _drawNoteHead(Canvas canvas, double x, double y, int duration) {
-    final rect = Rect.fromCenter(center: Offset(x, y), width: 30, height: 20);
-
     final strokePaint = Paint()
       ..color = const Color(0xFF111111)
       ..style = PaintingStyle.stroke
@@ -114,16 +112,32 @@ class _StaffPainter extends CustomPainter {
       ..color = const Color(0xFF111111)
       ..style = PaintingStyle.fill;
 
-    if (duration == 4 || duration == 2) {
+    if (duration == 4) {
+      final semibreveRect = Rect.fromCenter(
+        center: Offset(x, y),
+        width: 34,
+        height: 22,
+      );
+      canvas.drawOval(semibreveRect, strokePaint);
+      return;
+    }
+
+    // Minima/seminima use tilted notehead.
+    canvas.save();
+    canvas.translate(x, y);
+    canvas.rotate(-0.22);
+    final rect = Rect.fromCenter(center: Offset.zero, width: 30, height: 20);
+    if (duration == 2) {
       canvas.drawOval(rect, strokePaint);
     } else {
       canvas.drawOval(rect, fillPaint);
     }
+    canvas.restore();
   }
 
   void _drawStem(Canvas canvas, double x, double y, int duration, Paint paint) {
     if (duration == 2 || duration == 1) {
-      canvas.drawLine(Offset(x + 12, y), Offset(x + 12, y - 60), paint);
+      canvas.drawLine(Offset(x + 15, y - 1), Offset(x + 15, y - 60), paint);
     }
   }
 

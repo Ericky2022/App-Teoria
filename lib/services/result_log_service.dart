@@ -11,13 +11,17 @@ class ResultLogService {
     required int total,
     required double percentage,
   }) async {
-    final dir = await getApplicationDocumentsDirectory();
-    final file = File('${dir.path}/resultados_teoria_musical.txt');
-    final now = DateTime.now().toIso8601String();
+    try {
+      final dir = await getApplicationDocumentsDirectory();
+      final file = File('${dir.path}/resultados_teoria_musical.txt');
+      final now = DateTime.now().toIso8601String();
 
-    final line =
-        '$now | nome=$playerName | nivel=$levelLabel | fase=$phase | acertos=$score/$total | percentual=${percentage.toStringAsFixed(1)}%\n';
+      final line =
+          '$now | nome=$playerName | nivel=$levelLabel | fase=$phase | acertos=$score/$total | percentual=${percentage.toStringAsFixed(1)}%\n';
 
-    await file.writeAsString(line, mode: FileMode.append, flush: true);
+      await file.writeAsString(line, mode: FileMode.append, flush: true);
+    } catch (_) {
+      // Em Web ou plataformas sem suporte, apenas ignora a gravacao.
+    }
   }
 }

@@ -33,12 +33,15 @@ class _ExercisePageState extends State<ExercisePage> {
     _StageConfig(level: 'easy', duration: 4, phase: 1),
     _StageConfig(level: 'easy', duration: 4, phase: 2),
     _StageConfig(level: 'easy', duration: 4, phase: 3),
+    _StageConfig(level: 'easy', duration: 4, phase: 4),
     _StageConfig(level: 'medium', duration: 2, phase: 1),
     _StageConfig(level: 'medium', duration: 2, phase: 2),
     _StageConfig(level: 'medium', duration: 2, phase: 3),
+    _StageConfig(level: 'medium', duration: 2, phase: 4),
     _StageConfig(level: 'hard', duration: 1, phase: 1),
     _StageConfig(level: 'hard', duration: 1, phase: 2),
     _StageConfig(level: 'hard', duration: 1, phase: 3),
+    _StageConfig(level: 'hard', duration: 1, phase: 4),
   ];
 
   _StageConfig get _stage => _stages[widget.stageIndex];
@@ -206,14 +209,18 @@ class _ExercisePageState extends State<ExercisePage> {
     final isBelowRecommended = percent < _goodPercent;
     final isLastStage = widget.stageIndex >= _stages.length - 1;
 
-    await ResultLogService.appendResult(
-      playerName: widget.playerName,
-      levelLabel: _stage.levelLabel,
-      phase: _stage.phase,
-      score: _score,
-      total: _totalQuestions,
-      percentage: percent,
-    );
+    try {
+      await ResultLogService.appendResult(
+        playerName: widget.playerName,
+        levelLabel: _stage.levelLabel,
+        phase: _stage.phase,
+        score: _score,
+        total: _totalQuestions,
+        percentage: percent,
+      );
+    } catch (e) {
+      debugPrint('Falha ao salvar resultado: $e');
+    }
 
     await showDialog<void>(
       context: context,
