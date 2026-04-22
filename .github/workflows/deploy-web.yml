@@ -30,7 +30,7 @@ jobs:
         run: flutter pub get
 
       - name: Build web
-        run: flutter build web --release --base-href /App-Teoria/
+        run: flutter build web --release --base-href /Aplicativo-Teoria/
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
