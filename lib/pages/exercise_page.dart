@@ -244,6 +244,13 @@ class _ExercisePageState extends State<ExercisePage> {
             '$statusText',
           ),
           actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pop();
+              },
+              child: const Text('Voltar ao menu de fases'),
+            ),
             if (isGood)
               TextButton(
                 onPressed: () {
